@@ -456,6 +456,18 @@
                 showToast(`⚠️ ${pending.length} students not marked yet!`);
                 return;
             }
+
+            // Save to localStorage and go to report
+    const reportData = students.map(s => ({
+        regNo: s.regNo,
+        name: s.name,
+        dept: s.dept,
+        status: attendance[s.id]
+    }));
+
+    localStorage.setItem('attendanceReport', JSON.stringify(reportData));
+    window.location.href = '/view-reports';
+            
             showToast('✅ Attendance saved successfully!');
         }
 
