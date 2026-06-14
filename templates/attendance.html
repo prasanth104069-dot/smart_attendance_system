@@ -379,13 +379,13 @@
     <script>
         // Student Data
         const students = [
-            { id: 1, regNo: 'SKP2201', name: 'Arun Kumar',     dept: 'CSE' },
+            { id: 1, regNo: 'SKP2201', name: 'Arun Kumar',     dept: 'ECE' },
             { id: 2, regNo: 'SKP2202', name: 'Priya Devi',     dept: 'ECE' },
-            { id: 3, regNo: 'SKP2203', name: 'Rahul Singh',    dept: 'MECH' },
-            { id: 4, regNo: 'SKP2204', name: 'Sneha Rajan',    dept: 'CSE' },
-            { id: 5, regNo: 'SKP2205', name: 'Karthik M',      dept: 'EEE' },
-            { id: 6, regNo: 'SKP2206', name: 'Divya S',        dept: 'IT' },
-            { id: 7, regNo: 'SKP2207', name: 'Vikram P',       dept: 'CSE' },
+            { id: 3, regNo: 'SKP2203', name: 'Rahul Singh',    dept: 'ECE' },
+            { id: 4, regNo: 'SKP2204', name: 'Sneha Rajan',    dept: 'ECE' },
+            { id: 5, regNo: 'SKP2205', name: 'Karthik M',      dept: 'ECE' },
+            { id: 6, regNo: 'SKP2206', name: 'Divya S',        dept: 'ECE' },
+            { id: 7, regNo: 'SKP2207', name: 'Vikram P',       dept: 'ECE' },
             { id: 8, regNo: 'SKP2208', name: 'Anitha R',       dept: 'ECE' },
         ];
 
@@ -421,9 +421,9 @@
                     <td data-label="Action">
                         <div class="btn-group">
                             <button class="btn-present ${status === 'present' ? 'active' : ''}"
-                                onclick="markAttendance(${s.id}, 'present')">P</button>
+                                onclick="markAttendance(${s.id}, 'present')">Present</button>
                             <button class="btn-absent ${status === 'absent' ? 'active' : ''}"
-                                onclick="markAttendance(${s.id}, 'absent')">A</button>
+                                onclick="markAttendance(${s.id}, 'absent')">Absent</button>
                         </div>
                     </td>
                 `;

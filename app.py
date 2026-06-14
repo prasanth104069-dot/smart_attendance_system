@@ -3,6 +3,17 @@ from flask import Flask, render_template, request, redirect, url_for, flash, ses
 app = Flask(__name__)
 app.secret_key = 'mysecretkey123'
 
+students = [
+    { 'id': 1, 'regNo': 'SKP2201', 'name': 'Arun Kumar',  'dept': 'ECE' },
+    { 'id': 2, 'regNo': 'SKP2202', 'name': 'Priya Devi',  'dept': 'ECE' },
+    { 'id': 3, 'regNo': 'SKP2203', 'name': 'Rahul Singh', 'dept': 'ECE' },
+    { 'id': 4, 'regNo': 'SKP2204', 'name': 'Sneha Rajan', 'dept': 'ECE' },
+    { 'id': 5, 'regNo': 'SKP2205', 'name': 'Karthik M',   'dept': 'ECE' },
+    { 'id': 6, 'regNo': 'SKP2206', 'name': 'Divya S',     'dept': 'ECE' },
+    { 'id': 7, 'regNo': 'SKP2207', 'name': 'Vikram P',    'dept': 'ECE' },
+    { 'id': 8, 'regNo': 'SKP2208', 'name': 'Anitha R',    'dept': 'ECE' },
+]
+
 @app.route('/')
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -25,7 +36,7 @@ def dashboard():
         return redirect(url_for('login'))
     return render_template('dashboard.html',
                            staff_name=session['staff_name'],
-                           total_students=3)
+                           total_students=len(student))
 
 
 @app.route('/mark-attendance')
