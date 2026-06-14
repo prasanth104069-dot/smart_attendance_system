@@ -27,7 +27,7 @@ def dashboard():
                            staff_name=session['staff_name'],
                            total_students=3)
 
-<<<<<<< HEAD
+
 @app.route('/mark-attendance')
 def mark_attendance():
     if 'staff_name' not in session:
@@ -35,16 +35,14 @@ def mark_attendance():
     return render_template('attendance.html')
                                
 
-=======
->>>>>>> ce2fca456e25c5a98ff162f9c375416eb8429c21
 @app.route('/logout')
 def logout():
     session.clear()
     return redirect(url_for('login'))
 
 if __name__ == '__main__':
-<<<<<<< HEAD
+
     app.run(debug=True)
-=======
+
     app.run(debug=True)
->>>>>>> ce2fca456e25c5a98ff162f9c375416eb8429c21
+
