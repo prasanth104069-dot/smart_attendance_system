@@ -1,8 +1,4 @@
-<<<<<<< HEAD
- <!DOCTYPE html>
-=======
 <!DOCTYPE html>
->>>>>>> ce2fca456e25c5a98ff162f9c375416eb8429c21
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -22,19 +18,19 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            padding: 20px;
         }
 
         .container {
             width: 100%;
-            max-width: 400px;
-            padding: 20px;
+            max-width: 420px;
         }
 
         .login-box {
             background: white;
             padding: 40px;
-            border-radius: 10px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
             animation: slideIn 0.5s ease-out;
         }
 
@@ -50,13 +46,14 @@
 
         .logo h1 {
             color: #667eea;
-            font-size: 24px;
-            margin-bottom: 5px;
+            font-size: 26px;
+            margin-bottom: 6px;
         }
 
         .logo p {
-            color: #666;
-            font-size: 14px;
+            color: #444;
+            font-size: 15px;
+            font-weight: 600;
         }
 
         .form-group {
@@ -68,44 +65,47 @@
             margin-bottom: 8px;
             color: #333;
             font-weight: 500;
+            font-size: 14px;
         }
 
         .form-group input {
             width: 100%;
             padding: 12px 15px;
             border: 2px solid #e0e0e0;
-            border-radius: 5px;
+            border-radius: 8px;
             font-size: 14px;
             transition: border-color 0.3s ease;
+            background: #f8f9ff;
         }
 
         .form-group input:focus {
             outline: none;
             border-color: #667eea;
-            box-shadow: 0 0 5px rgba(102, 126, 234, 0.1);
+            background: white;
+            box-shadow: 0 0 8px rgba(102,126,234,0.15);
         }
 
         .form-group input::placeholder {
-            color: #999;
+            color: #aaa;
         }
 
         .submit-btn {
             width: 100%;
-            padding: 12px;
+            padding: 13px;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             border: none;
-            border-radius: 5px;
+            border-radius: 8px;
             font-size: 16px;
             font-weight: 600;
             cursor: pointer;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            transition: transform 0.2s, box-shadow 0.2s;
             margin-top: 10px;
         }
 
         .submit-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+            box-shadow: 0 5px 20px rgba(102,126,234,0.4);
         }
 
         .submit-btn:active {
@@ -114,7 +114,7 @@
 
         .alert {
             padding: 12px 15px;
-            border-radius: 5px;
+            border-radius: 8px;
             margin-bottom: 20px;
             font-size: 14px;
             display: none;
@@ -133,45 +133,59 @@
         .alert-success {
             background-color: #efe;
             border: 1px solid #cfc;
-            color: #3c3;
+            color: #2e7d32;
         }
 
         .info-text {
             font-size: 12px;
             color: #666;
-            margin-top: 15px;
-            padding: 10px;
+            margin-top: 20px;
+            padding: 12px;
             background: #f5f5f5;
             border-left: 3px solid #667eea;
-            border-radius: 3px;
+            border-radius: 5px;
+            line-height: 1.8;
         }
 
         .footer {
             text-align: center;
             margin-top: 20px;
-            color: #999;
+            color: #aaa;
             font-size: 12px;
+        }
+
+        /* Mobile */
+        @media (max-width: 480px) {
+            .login-box {
+                padding: 30px 20px;
+            }
+
+            .logo h1 {
+                font-size: 22px;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="login-box">
+
             <div class="logo">
                 <h1>📋 Attendance System</h1>
-                <h2>SKP Engineering College</h2>
+                <p>SKP Engineering College</p>
             </div>
 
-            <!-- Alert Box -->
             <div id="alertBox" class="alert"></div>
 
-            <form id="loginForm" action="/login" method="POST" onsubmit="return validateForm()">
+            <form id="loginForm" action="/login" method="POST"
+                  onsubmit="return validateForm()">
+
                 <div class="form-group">
                     <label for="staff_id">Staff ID</label>
-                    <input 
-                        type="text" 
+                    <input
+                        type="text"
                         id="staff_id"
-                        name="staff_id" 
+                        name="staff_id"
                         placeholder="Enter your Staff ID"
                         required
                         autocomplete="username"
@@ -180,10 +194,10 @@
 
                 <div class="form-group">
                     <label for="password">Password</label>
-                    <input 
-                        type="password" 
+                    <input
+                        type="password"
                         id="password"
-                        name="password" 
+                        name="password"
                         placeholder="Enter your password"
                         required
                         autocomplete="current-password"
@@ -202,6 +216,7 @@
             <div class="footer">
                 <p>&copy; 2026 Smart Attendance System. All rights reserved.</p>
             </div>
+
         </div>
     </div>
 
@@ -218,20 +233,19 @@
             const password = document.getElementById('password').value;
 
             if (!staffId || !password) {
-                showAlert('Please fill in all fields', 'error');
+                showAlert('⚠️ Please fill in all fields', 'error');
                 return false;
             }
-
             if (staffId.length < 3) {
-                showAlert('Staff ID must be at least 3 characters', 'error');
+                showAlert('⚠️ Staff ID must be at least 3 characters', 'error');
                 return false;
             }
-
             if (password.length < 6) {
-                showAlert('Password must be at least 6 characters', 'error');
+                showAlert('⚠️ Password must be at least 6 characters', 'error');
                 return false;
             }
-
             return true;
         }
-
+    </script>
+</body>
+</html>
