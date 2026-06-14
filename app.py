@@ -44,6 +44,14 @@ def mark_attendance():
         return redirect(url_for('login'))
     return render_template('attendance.html')
 
+
+@app.route('/view-reports')
+def view_reports():
+    if 'staff_name' not in session:
+        return redirect(url_for('login'))
+    return render_template('report.html')
+        
+
 @app.route('/logout')
 def logout():
     session.clear()
