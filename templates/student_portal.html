@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Portal</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 15px;
+        }
+
+        .main-container {
+            width: 100%;
+            max-width: 900px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        /* Header */
+        .header {
+            background: white;
+            padding: 20px 25px;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .header-left h1 {
+            color: #333;
+            font-size: 20px;
+        }
+
+        .header-left p {
+            color: #888;
+            font-size: 12px;
+            margin-top: 3px;
+        }
+
+        .logout-btn {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            transition: transform 0.2s;
+        }
+
+        .logout-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        /* Student Info Card */
+        .student-info {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .student-avatar {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            flex-shrink: 0;
+        }
+
+        .student-details h2 {
+            color: #333;
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .student-details p {
+            color: #888;
+            font-size: 13px;
+            margin-top: 4px;
+        }
+
+        .reg-badge {
+            display: inline-block;
+            background: #f0f0ff;
+            color: #667eea;
+            padding: 3px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-top: 6px;
+            font-family: monospace;
+        }
+
+        /* Summary Cards */
+        .summary {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+        }
+
+        .summary-card {
+            background: white;
+            padding: 18px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        .summary-card h2 {
+            font-size: 26px;
+            font-weight: 700;
+        }
+
+        .summary-card p {
+            font-size: 11px;
+            color: #888;
+            margin-top: 4px;
+        }
+
+        .total h2      { color: #667eea; }
+        .present h2    { color: #2ecc71; }
+        .absent h2     { color: #e74c3c; }
+        .percentage h2 { color: #f39c12; }
+
+        /* Percentage Bar */
+        .percentage-bar-container {
+            background: white;
+            padding: 20px 25px;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        .percentage-bar-container h3 {
+            color: #333;
+            font-size: 15px;
+            margin-bottom: 12px;
+        }
+
+        .bar-track {
+            background: #f0f0f0;
+            border-radius: 20px;
+            height: 20px;
+            overflow: hidden;
+        }
+
+        .bar-fill {
+            height: 100%;
+            border-radius: 20px;
+            transition: width 1s ease;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 10px;
+            font-size: 11px;
+            font-weight: 700;
+            color: white;
+        }
+
+        .bar-good     { background: linear-gradient(135deg, #2ecc71, #27ae60); }
+        .bar-warning  { background: linear-gradient(135deg, #f39c12, #e67e22); }
+        .bar-danger   { background: linear-gradient(135deg, #e74c3c, #c0392b); }
+
+        .bar-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 8px;
+            font-size: 11px;
+            color: #999;
+        }
+
+        .attendance-note {
+            margin-top: 10px;
+            font-size: 12px;
+            padding: 8px 12px;
+            border-radius: 6px;
+        }
+
+        .note-good    { background: #efe; color: #2ecc71; }
+        .note-warning { background: #fff8e1; color: #f39c12; }
+        .note-danger  { background: #fee; color: #e74c3c; }
+
+        /* Table */
+        .table-container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .table-header {
+            padding: 18px 20px;
+            border-bottom: 1px solid #f0f0f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .table-header h3 {
+            color: #333;
+            font-size: 15px;
+        }
+
+        .table-wrapper {
+            width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 400px;
+        }
+
+        thead {
+            background: #f8f9ff;
+        }
+
+        thead th {
+            padding: 12px 15px;
+            text-align: left;
+            font-size: 12px;
+            color: #555;
+            font-weight: 600;
+            border-bottom: 2px solid #eee;
+            white-space: nowrap;
+        }
+
+        tbody tr {
+            border-bottom: 1px solid #f5f5f5;
+        }
+
+        tbody tr.present-row { background: #f0fff4; }
+        tbody tr.absent-row  { background: #fff5f5; }
+
+        tbody td {
+            padding: 12px 15px;
+            font-size: 13px;
+            color: #333;
+            white-space: nowrap;
+        }
+
+        .status-badge {
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .status-present { background: #d4edda; color: #2ecc71; }
+        .status-absent  { background: #fde8e8; color: #e74c3c; }
+
+        /* State */
+        .state-box {
+            text-align: center;
+            padding: 40px 20px;
+            color: #999;
+        }
+
+        .state-box .icon { font-size: 40px; margin-bottom: 10px; }
+        .state-box p { font-size: 14px; }
+
+        .spinner {
+            width: 30px;
+            height: 30px;
+            border: 3px solid #f0f0f0;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 10px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Mobile */
+        @media (max-width: 500px) {
+            .summary {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .summary-card h2 { font-size: 22px; }
+            .header-left h1  { font-size: 16px; }
+
+            .student-details h2 { font-size: 16px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+
+        <!-- Header -->
+        <div class="header">
+            <div class="header-left">
+                <h1>🎓 Student Portal</h1>
+                <p>Smart Attendance System — SKP Engineering College</p>
+            </div>
+            <a href="/logout" class="logout-btn">🚪 Logout</a>
+        </div>
+
+        <!-- Student Info -->
+        <div class="student-info">
+            <div class="student-avatar">🎓</div>
+            <div class="student-details">
+                <h2 id="studentName">Loading...</h2>
+                <p id="studentDept"></p>
+                <span class="reg-badge" id="studentReg"></span>
+            </div>
+        </div>
+
+        <!-- Summary -->
+        <div class="summary">
+            <div class="summary-card total">
+                <h2 id="totalCount">0</h2>
+                <p>Total Classes</p>
+            </div>
+            <div class="summary-card present">
+                <h2 id="presentCount">0</h2>
+                <p>Present</p>
+            </div>
+            <div class="summary-card absent">
+                <h2 id="absentCount">0</h2>
+                <p>Absent</p>
+            </div>
+            <div class="summary-card percentage">
+                <h2 id="percentCount">0%</h2>
+                <p>Attendance</p>
+            </div>
+        </div>
+
+        <!-- Percentage Bar -->
+        <div class="percentage-bar-container">
+            <h3>📊 Attendance Percentage</h3>
+            <div class="bar-track">
+                <div class="bar-fill" id="barFill" style="width: 0%">
+                </div>
+            </div>
+            <div class="bar-labels">
+                <span>0%</span>
+                <span>75% (Required)</span>
+                <span>100%</span>
+            </div>
+            <div class="attendance-note" id="attendanceNote"></div>
+        </div>
+
+        <!-- Attendance History Table -->
+        <div class="table-container">
+            <div class="table-header">
+                <h3>📋 Attendance History</h3>
+            </div>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Date</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="historyBody">
+                        <tr>
+                            <td colspan="3">
+                                <div class="state-box">
+                                    <div class="spinner"></div>
+                                    <p>Loading attendance...</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // Load student data
+        async function loadStudentData() {
+            try {
+                const res = await fetch('/api/student-portal');
+                const data = await res.json();
+
+                if (!data.success) {
+                    window.location.href = '/login';
+                    return;
+                }
+
+                // Student info
+                document.getElementById('studentName').textContent =
+                    data.student.name;
+                document.getElementById('studentDept').textContent =
+                    data.student.dept + ' Department';
+                document.getElementById('studentReg').textContent =
+                    data.student.reg_no;
+
+                // Summary
+                document.getElementById('totalCount').textContent =
+                    data.total;
+                document.getElementById('presentCount').textContent =
+                    data.present;
+                document.getElementById('absentCount').textContent =
+                    data.absent;
+                document.getElementById('percentCount').textContent =
+                    data.percent + '%';
+
+                // Progress bar
+                const bar = document.getElementById('barFill');
+                const note = document.getElementById('attendanceNote');
+                bar.style.width = data.percent + '%';
+
+                if (data.percent >= 75) {
+                    bar.className = 'bar-fill bar-good';
+                    note.className = 'attendance-note note-good';
+                    note.textContent =
+                        '✅ Good! Your attendance is above 75%.';
+                } else if (data.percent >= 60) {
+                    bar.className = 'bar-fill bar-warning';
+                    note.className = 'attendance-note note-warning';
+                    note.textContent =
+                        '⚠️ Warning! Attendance below 75%. Attend more classes.';
+                } else {
+                    bar.className = 'bar-fill bar-danger';
+                    note.className = 'attendance-note note-danger';
+                    note.textContent =
+                        '❌ Danger! Attendance critically low. Risk of detention.';
+                }
+
+                if (data.percent > 0) {
+                    bar.textContent = data.percent + '%';
+                }
+
+                // History table
+                renderHistory(data.records);
+
+            } catch (err) {
+                document.getElementById('historyBody').innerHTML = `
+                    <tr>
+                        <td colspan="3">
+                            <div class="state-box">
+                                <div class="icon">❌</div>
+                                <p>Error loading data!</p>
+                            </div>
+                        </td>
+                    </tr>`;
+            }
+        }
+
+        function renderHistory(records) {
+            const tbody = document.getElementById('historyBody');
+
+            if (records.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="3">
+                            <div class="state-box">
+                                <div class="icon">📭</div>
+                                <p>No attendance records yet.</p>
+                            </div>
+                        </td>
+                    </tr>`;
+                return;
+            }
+
+            tbody.innerHTML = '';
+            records.forEach((r, index) => {
+                const row = document.createElement('tr');
+                row.className = r.status === 'present' ?
+                    'present-row' : 'absent-row';
+
+                // Format date
+                const dateObj = new Date(r.date);
+                const dateStr = dateObj.toLocaleDateString('en-US', {
+                    weekday: 'short',
+                    year:    'numeric',
+                    month:   'short',
+                    day:     'numeric'
+                });
+
+                row.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>${dateStr}</td>
+                    <td>
+                        <span class="status-badge status-${r.status}">
+                            ${r.status === 'present' ?
+                                '✅ Present' : '❌ Absent'}
+                        </span>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        // Init
+        loadStudentData();
+    </script>
+</body>
+</html>
