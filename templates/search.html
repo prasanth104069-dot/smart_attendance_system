@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Attendance</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 15px;
+        }
+
+        .main-container {
+            width: 100%;
+            max-width: 900px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        /* Header */
+        .header {
+            background: white;
+            padding: 20px 25px;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .header-left h1 {
+            color: #333;
+            font-size: 20px;
+        }
+
+        .header-left p {
+            color: #888;
+            font-size: 12px;
+            margin-top: 3px;
+        }
+
+        .back-btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        /* Search Box */
+        .search-container {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        .search-title {
+            color: #333;
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .search-box {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .search-input {
+            flex: 1;
+            min-width: 200px;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+            outline: none;
+        }
+
+        .search-input:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 8px rgba(102,126,234,0.15);
+        }
+
+        .search-btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+            white-space: nowrap;
+        }
+
+        .search-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .clear-btn {
+            background: #f0f0f0;
+            color: #555;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+            white-space: nowrap;
+        }
+
+        .clear-btn:hover {
+            background: #e0e0e0;
+        }
+
+        .search-hint {
+            color: #999;
+            font-size: 12px;
+            margin-top: 10px;
+        }
+
+        /* Results */
+        .results-container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            overflow: hidden;
+            display: none;
+        }
+
+        .results-container.show {
+            display: block;
+        }
+
+        .results-header {
+            padding: 18px 20px;
+            border-bottom: 1px solid #f0f0f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .results-header h3 {
+            color: #333;
+            font-size: 15px;
+        }
+
+        .result-count {
+            background: #f0f0ff;
+            color: #667eea;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .table-wrapper {
+            width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 500px;
+        }
+
+        thead {
+            background: #f8f9ff;
+        }
+
+        thead th {
+            padding: 12px 15px;
+            text-align: left;
+            font-size: 12px;
+            color: #555;
+            font-weight: 600;
+            border-bottom: 2px solid #eee;
+            white-space: nowrap;
+        }
+
+        tbody tr {
+            border-bottom: 1px solid #f5f5f5;
+            transition: background 0.2s;
+        }
+
+        tbody tr:hover { background: #f8f9ff; }
+        tbody tr.present-row { background: #f0fff4; }
+        tbody tr.absent-row  { background: #fff5f5; }
+
+        tbody td {
+            padding: 12px 15px;
+            font-size: 13px;
+            color: #333;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 150px;
+        }
+
+        .reg-no {
+            font-family: monospace;
+            color: #667eea;
+            font-weight: 600;
+        }
+
+        .dept-badge {
+            background: #f0f0ff;
+            color: #667eea;
+            padding: 2px 8px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .status-badge {
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .status-present { background: #d4edda; color: #2ecc71; }
+        .status-absent  { background: #fde8e8; color: #e74c3c; }
+
+        /* States */
+        .state-box {
+            text-align: center;
+            padding: 40px 20px;
+            color: #999;
+        }
+
+        .state-box .icon {
+            font-size: 40px;
+            margin-bottom: 10px;
+        }
+
+        .state-box p {
+            font-size: 14px;
+        }
+
+        /* Loading spinner */
+        .spinner {
+            width: 30px;
+            height: 30px;
+            border: 3px solid #f0f0f0;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 10px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Mobile */
+        @media (max-width: 500px) {
+            .header-left h1 { font-size: 16px; }
+            .search-btn { width: 100%; }
+            .clear-btn  { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+
+        <!-- Header -->
+        <div class="header">
+            <div class="header-left">
+                <h1>🔍 Search Attendance</h1>
+                <p>Search by student name or register number</p>
+            </div>
+            <a href="/dashboard" class="back-btn">← Back</a>
+        </div>
+
+        <!-- Search Box -->
+        <div class="search-container">
+            <p class="search-title">🔎 Search Student</p>
+            <div class="search-box">
+                <input
+                    type="text"
+                    id="searchInput"
+                    class="search-input"
+                    placeholder="Enter name or register no (e.g. SKP2201 or Arun)"
+                    onkeypress="handleKeyPress(event)"
+                />
+                <button class="search-btn" onclick="searchStudent()">
+                    Search
+                </button>
+                <button class="clear-btn" onclick="clearSearch()">
+                    Clear
+                </button>
+            </div>
+            <p class="search-hint">
+                💡 Tip: You can search by partial name or register number
+            </p>
+        </div>
+
+        <!-- Results -->
+        <div class="results-container" id="resultsContainer">
+            <div class="results-header">
+                <h3>📋 Search Results</h3>
+                <span class="result-count" id="resultCount">0 found</span>
+            </div>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Reg No</th>
+                            <th>Name</th>
+                            <th>Dept</th>
+                            <th>Status</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody id="resultsBody">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // Search on Enter key
+        function handleKeyPress(e) {
+            if (e.key === 'Enter') searchStudent();
+        }
+
+        // Search student
+        async function searchStudent() {
+            const query = document.getElementById('searchInput')
+                .value.trim();
+
+            if (!query) {
+                showState('empty');
+                return;
+            }
+
+            showState('loading');
+
+            try {
+                const res = await fetch(
+                    `/api/search?q=${encodeURIComponent(query)}`
+                );
+                const data = await res.json();
+                renderResults(data);
+            } catch (err) {
+                showState('error');
+            }
+        }
+
+        // Render results
+        function renderResults(data) {
+            const container = document.getElementById('resultsContainer');
+            const tbody = document.getElementById('resultsBody');
+            const countEl = document.getElementById('resultCount');
+
+            container.classList.add('show');
+            countEl.textContent = `${data.length} found`;
+
+            if (data.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="6">
+                            <div class="state-box">
+                                <div class="icon">😕</div>
+                                <p>No records found for your search.</p>
+                            </div>
+                        </td>
+                    </tr>`;
+                return;
+            }
+
+            tbody.innerHTML = '';
+            data.forEach((r, index) => {
+                const row = document.createElement('tr');
+                row.className = r.status === 'present' ?
+                    'present-row' : 'absent-row';
+
+                // Format date
+                const dateObj = new Date(r.date);
+                const dateStr = dateObj.toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric'
+                });
+
+                row.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td><span class="reg-no">${r.reg_no}</span></td>
+                    <td title="${r.name}">${r.name}</td>
+                    <td><span class="dept-badge">${r.dept}</span></td>
+                    <td>
+                        <span class="status-badge status-${r.status}">
+                            ${r.status === 'present' ?
+                                '✅ Present' : '❌ Absent'}
+                        </span>
+                    </td>
+                    <td>${dateStr}</td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        // Show state
+        function showState(type) {
+            const container = document.getElementById('resultsContainer');
+            const tbody = document.getElementById('resultsBody');
+            container.classList.add('show');
+
+            if (type === 'loading') {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="6">
+                            <div class="state-box">
+                                <div class="spinner"></div>
+                                <p>Searching...</p>
+                            </div>
+                        </td>
+                    </tr>`;
+            } else if (type === 'empty') {
+                container.classList.remove('show');
+            } else if (type === 'error') {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="6">
+                            <div class="state-box">
+                                <div class="icon">❌</div>
+                                <p>Error connecting to server!</p>
+                            </div>
+                        </td>
+                    </tr>`;
+            }
+        }
+
+        // Clear search
+        function clearSearch() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('resultsContainer')
+                .classList.remove('show');
+            document.getElementById('resultsBody').innerHTML = '';
+            document.getElementById('resultCount').textContent = '0 found';
+        }
+    </script>
+</body>
+</html>
