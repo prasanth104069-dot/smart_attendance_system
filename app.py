@@ -25,7 +25,8 @@ def init_db():
             id       INTEGER PRIMARY KEY AUTOINCREMENT,
             reg_no   TEXT UNIQUE NOT NULL,
             name     TEXT NOT NULL,
-            dept     TEXT NOT NULL
+            dept     TEXT NOT NULL,
+            password TEXT NOT NULL DEFAULT '123456'
         )
     ''')
 
@@ -44,14 +45,14 @@ def init_db():
     cursor.execute('SELECT COUNT(*) FROM students')
     if cursor.fetchone()[0] == 0:
         students = [
-            ('SKP2201', 'Arun Kumar',  'ECE'),
-            ('SKP2202', 'Priya Devi',  'ECE'),
-            ('SKP2203', 'Rahul Singh', 'ECE'),
-            ('SKP2204', 'Sneha Rajan', 'ECE'),
-            ('SKP2205', 'Karthik M',   'ECE'),
-            ('SKP2206', 'Divya S',     'ECE'),
-            ('SKP2207', 'Vikram P',    'ECE'),
-            ('SKP2208', 'Anitha R',    'ECE'),
+            ('SKP2201', 'Arun Kumar',  'ECE', '123456'),
+            ('SKP2202', 'Priya Devi',  'ECE', '123456'),
+            ('SKP2203', 'Rahul Singh', 'ECE', '123456'),
+            ('SKP2204', 'Sneha Rajan', 'ECE', '123456'),
+            ('SKP2205', 'Karthik M',   'ECE', '123456'),
+            ('SKP2206', 'Divya S',     'ECE', '123456'),
+            ('SKP2207', 'Vikram P',    'ECE', '123456'),
+            ('SKP2208', 'Anitha R',    'ECE', '123456'),
         ]
         cursor.executemany(
             'INSERT INTO students (reg_no, name, dept) VALUES (?, ?, ?)',
