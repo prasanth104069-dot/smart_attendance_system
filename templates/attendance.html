@@ -42,7 +42,7 @@
 
         .header-left h1 {
             color: #333;
-            font-size: 22px;
+            font-size: 20px;
         }
 
         .header-left p {
@@ -61,12 +61,9 @@
             font-weight: 600;
             cursor: pointer;
             text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 5px;
         }
 
-        /* Summary Cards */
+        /* Sticky Summary */
         .summary {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -74,32 +71,30 @@
             position: sticky;
             top: 10px;
             z-index: 100;
-
-            
         }
 
         .summary-card {
             background: white;
-            padding: 20px;
+            padding: 18px;
             border-radius: 12px;
             text-align: center;
             box-shadow: 0 5px 20px rgba(0,0,0,0.1);
         }
 
         .summary-card h2 {
-            font-size: 32px;
+            font-size: 28px;
             font-weight: 700;
         }
 
         .summary-card p {
-            font-size: 13px;
+            font-size: 12px;
             color: #888;
-            margin-top: 5px;
+            margin-top: 4px;
         }
 
-        .total h2 { color: #667eea; }
+        .total h2   { color: #667eea; }
         .present h2 { color: #2ecc71; }
-        .absent h2 { color: #e74c3c; }
+        .absent h2  { color: #e74c3c; }
 
         /* Table */
         .table-container {
@@ -110,7 +105,7 @@
         }
 
         .table-header {
-            padding: 20px 25px;
+            padding: 18px 20px;
             border-bottom: 1px solid #f0f0f0;
             display: flex;
             justify-content: space-between;
@@ -121,7 +116,7 @@
 
         .table-header h3 {
             color: #333;
-            font-size: 16px;
+            font-size: 15px;
         }
 
         .save-btn {
@@ -140,9 +135,22 @@
             transform: translateY(-2px);
         }
 
+        .save-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .table-wrapper {
+            width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
         table {
             width: 100%;
             border-collapse: collapse;
+            min-width: 500px;
         }
 
         thead {
@@ -150,12 +158,13 @@
         }
 
         thead th {
-            padding: 14px 20px;
+            padding: 12px 15px;
             text-align: left;
-            font-size: 13px;
+            font-size: 12px;
             color: #555;
             font-weight: 600;
             border-bottom: 2px solid #eee;
+            white-space: nowrap;
         }
 
         tbody tr {
@@ -163,22 +172,17 @@
             transition: background 0.2s;
         }
 
-        tbody tr:hover {
-            background: #f8f9ff;
-        }
-
-        tbody tr.present-row {
-            background: #f0fff4;
-        }
-
-        tbody tr.absent-row {
-            background: #fff5f5;
-        }
+        tbody tr.present-row { background: #f0fff4; }
+        tbody tr.absent-row  { background: #fff5f5; }
 
         tbody td {
-            padding: 14px 20px;
-            font-size: 14px;
+            padding: 12px 15px;
+            font-size: 13px;
             color: #333;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 150px;
         }
 
         .reg-no {
@@ -190,40 +194,41 @@
         .dept-badge {
             background: #f0f0ff;
             color: #667eea;
-            padding: 3px 10px;
+            padding: 2px 8px;
             border-radius: 20px;
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 600;
         }
 
-        /* Attendance Buttons */
         .btn-group {
             display: flex;
-            gap: 8px;
+            gap: 6px;
         }
 
         .btn-present {
-            padding: 7px 16px;
+            padding: 6px 12px;
             border: 2px solid #2ecc71;
             background: white;
             color: #2ecc71;
             border-radius: 6px;
-            font-size: 13px;
+            font-size: 12px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.2s;
+            white-space: nowrap;
         }
 
         .btn-absent {
-            padding: 7px 16px;
+            padding: 6px 12px;
             border: 2px solid #e74c3c;
             background: white;
             color: #e74c3c;
             border-radius: 6px;
-            font-size: 13px;
+            font-size: 12px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.2s;
+            white-space: nowrap;
         }
 
         .btn-present.active {
@@ -237,25 +242,22 @@
         }
 
         .status-badge {
-            padding: 4px 12px;
+            padding: 3px 10px;
             border-radius: 20px;
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 600;
         }
 
-        .status-present {
-            background: #d4edda;
-            color: #2ecc71;
-        }
+        .status-present { background: #d4edda; color: #2ecc71; }
+        .status-absent  { background: #fde8e8; color: #e74c3c; }
+        .status-pending { background: #f0f0f0; color: #999;    }
 
-        .status-absent {
-            background: #fde8e8;
-            color: #e74c3c;
-        }
-
-        .status-pending {
-            background: #f0f0f0;
-            color: #999;
+        /* Loading */
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #888;
+            font-size: 14px;
         }
 
         /* Toast */
@@ -270,58 +272,15 @@
             font-size: 14px;
             display: none;
             z-index: 999;
-            animation: fadeIn 0.3s ease;
         }
 
-        .toast.show {
-            display: block;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        .toast.show { display: block; }
 
         /* Mobile */
-        @media (max-width: 600px) {
-            .summary {
-                grid-template-columns: repeat(3, 1fr);
-                gap: 10px;
-            }
-
-            .summary-card {
-                padding: 15px 10px;
-            }
-
-            .summary-card h2 {
-                font-size: 24px;
-            }
-
-            table thead {
-                display: none;
-            }
-
-            tbody tr {
-                display: block;
-                padding: 15px 20px;
-                border-bottom: 2px solid #f0f0f0;
-            }
-
-            tbody td {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                padding: 5px 0;
-                font-size: 13px;
-                border: none;
-            }
-
-            tbody td::before {
-                content: attr(data-label);
-                font-weight: 600;
-                color: #888;
-                font-size: 12px;
-            }
+        @media (max-width: 500px) {
+            .summary-card h2 { font-size: 22px; }
+            .summary-card p  { font-size: 10px; }
+            .header-left h1  { font-size: 16px; }
         }
     </style>
 </head>
@@ -337,11 +296,11 @@
             <a href="/dashboard" class="back-btn">← Back</a>
         </div>
 
-        <!-- Summary -->
+        <!-- Sticky Summary -->
         <div class="summary">
             <div class="summary-card total">
                 <h2 id="totalCount">0</h2>
-                <p>Total Students</p>
+                <p>Total</p>
             </div>
             <div class="summary-card present">
                 <h2 id="presentCount">0</h2>
@@ -357,23 +316,32 @@
         <div class="table-container">
             <div class="table-header">
                 <h3>📋 Student List</h3>
-                <button class="save-btn" onclick="saveAttendance()">💾 Save Attendance</button>
+                <button class="save-btn" id="saveBtn"
+                        onclick="saveAttendance()">
+                    💾 Save Attendance
+                </button>
             </div>
-            <table>
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Register No</th>
-                        <th>Student Name</th>
-                        <th>Department</th>
-                        <th>Status</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody id="studentTable">
-                    <!-- Students loaded by JS -->
-                </tbody>
-            </table>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Reg No</th>
+                            <th>Name</th>
+                            <th>Dept</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="studentTable">
+                        <tr>
+                            <td colspan="6" class="loading">
+                                ⏳ Loading students...
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
 
     </div>
@@ -382,101 +350,158 @@
     <div class="toast" id="toast"></div>
 
     <script>
-        // Student Data
-        const students = [
-            { id: 1, regNo: 'SKP2201', name: 'Arun Kumar',     dept: 'ECE' },
-            { id: 2, regNo: 'SKP2202', name: 'Priya Devi',     dept: 'ECE' },
-            { id: 3, regNo: 'SKP2203', name: 'Rahul Singh',    dept: 'ECE' },
-            { id: 4, regNo: 'SKP2204', name: 'Sneha Rajan',    dept: 'ECE' },
-            { id: 5, regNo: 'SKP2205', name: 'Karthik M',      dept: 'ECE' },
-            { id: 6, regNo: 'SKP2206', name: 'Divya S',        dept: 'ECE' },
-            { id: 7, regNo: 'SKP2207', name: 'Vikram P',       dept: 'ECE' },
-            { id: 8, regNo: 'SKP2208', name: 'Anitha R',       dept: 'ECE' },
-        ];
+        const attendance = {};
+        let totalStudentsCount = 0;
 
-        let attendance = {};
-
-        // Load today's date
+        // Show today's date
         const today = new Date();
-        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-        document.getElementById('todayDate').textContent = today.toLocaleDateString('en-US', options);
+        const options = {
+            weekday: 'long', year: 'numeric',
+            month: 'long', day: 'numeric'
+        };
+        document.getElementById('todayDate').textContent =
+            today.toLocaleDateString('en-US', options);
 
-        // Render table
-        function renderTable() {
-            const tbody = document.getElementById('studentTable');
-            tbody.innerHTML = '';
+        // Load students from API
+        async function loadStudents() {
+            try {
+                const res = await fetch('/api/students');
+                const students = await res.json();
 
-            students.forEach((s, index) => {
-                const status = attendance[s.id] || 'pending';
-                const row = document.createElement('tr');
+                totalStudentsCount = students.length;
+                document.getElementById('totalCount').textContent =
+                    students.length;
 
-                if (status === 'present') row.className = 'present-row';
-                else if (status === 'absent') row.className = 'absent-row';
+                const tbody = document.getElementById('studentTable');
+                tbody.innerHTML = '';
 
-                row.innerHTML = `
-                    <td data-label="No">${index + 1}</td>
-                    <td data-label="Reg No"><span class="reg-no">${s.regNo}</span></td>
-                    <td data-label="Name">${s.name}</td>
-                    <td data-label="Dept"><span class="dept-badge">${s.dept}</span></td>
-                    <td data-label="Status">
-                        <span class="status-badge status-${status}">
-                            ${status === 'present' ? '✅ Present' : status === 'absent' ? '❌ Absent' : '⏳ Pending'}
-                        </span>
-                    </td>
-                    <td data-label="Action">
-                        <div class="btn-group">
-                            <button class="btn-present ${status === 'present' ? 'active' : ''}"
-                                onclick="markAttendance(${s.id}, 'present')">Present</button>
-                            <button class="btn-absent ${status === 'absent' ? 'active' : ''}"
-                                onclick="markAttendance(${s.id}, 'absent')">Absent</button>
-                        </div>
-                    </td>
-                `;
-                tbody.appendChild(row);
-            });
+                students.forEach((s, index) => {
+                    const row = document.createElement('tr');
+                    row.id = 'row-' + s.id;
+                    row.innerHTML = `
+                        <td>${index + 1}</td>
+                        <td><span class="reg-no">${s.reg_no}</span></td>
+                        <td title="${s.name}">${s.name}</td>
+                        <td>
+                            <span class="dept-badge">${s.dept}</span>
+                        </td>
+                        <td>
+                            <span class="status-badge status-pending"
+                                  id="status-${s.id}">
+                                ⏳ Pending
+                            </span>
+                        </td>
+                        <td>
+                            <div class="btn-group">
+                                <button class="btn-present"
+                                    id="p-${s.id}"
+                                    onclick="markAttendance(
+                                        ${s.id}, 'present')">
+                                    Present
+                                </button>
+                                <button class="btn-absent"
+                                    id="a-${s.id}"
+                                    onclick="markAttendance(
+                                        ${s.id}, 'absent')">
+                                    Absent
+                                </button>
+                            </div>
+                        </td>
+                    `;
+                    tbody.appendChild(row);
+                });
 
-            updateCounts();
+            } catch (err) {
+                document.getElementById('studentTable').innerHTML =
+                    '<tr><td colspan="6" class="loading">❌ Failed to load students!</td></tr>';
+            }
         }
 
         // Mark attendance
         function markAttendance(id, status) {
             attendance[id] = status;
-            renderTable();
+
+            // Row color
+            const row = document.getElementById('row-' + id);
+            row.className = status === 'present' ?
+                'present-row' : 'absent-row';
+
+            // Status badge
+            const badge = document.getElementById('status-' + id);
+            badge.className = 'status-badge status-' + status;
+            badge.textContent = status === 'present' ?
+                '✅ Present' : '❌ Absent';
+
+            // Buttons
+            document.getElementById('p-' + id).className =
+                'btn-present' + (status === 'present' ? ' active' : '');
+            document.getElementById('a-' + id).className =
+                'btn-absent' + (status === 'absent' ? ' active' : '');
+
+            updateCounts();
         }
 
         // Update counts
         function updateCounts() {
-            const presentCount = Object.values(attendance).filter(v => v === 'present').length;
-            const absentCount = Object.values(attendance).filter(v => v === 'absent').length;
+            const presentCount = Object.values(attendance)
+                .filter(v => v === 'present').length;
+            const absentCount = Object.values(attendance)
+                .filter(v => v === 'absent').length;
 
-            document.getElementById('totalCount').textContent = students.length;
-            document.getElementById('presentCount').textContent = presentCount;
-            document.getElementById('absentCount').textContent = absentCount;
+            document.getElementById('presentCount').textContent =
+                presentCount;
+            document.getElementById('absentCount').textContent =
+                absentCount;
         }
 
-        // Save attendance
-        function saveAttendance() {
-            const pending = students.filter(s => !attendance[s.id]);
-            if (pending.length > 0) {
-                showToast(`⚠️ ${pending.length} students not marked yet!`);
+        // Save attendance to database
+        async function saveAttendance() {
+            const marked = Object.keys(attendance).length;
+            const pending = totalStudentsCount - marked;
+
+            if (pending > 0) {
+                showToast(`⚠️ ${pending} students not marked yet!`);
                 return;
             }
 
-            // Save to localStorage and go to report
-    const reportData = students.map(s => ({
-        regNo: s.regNo,
-        name: s.name,
-        dept: s.dept,
-        status: attendance[s.id]
-    }));
+            const saveBtn = document.getElementById('saveBtn');
+            saveBtn.disabled = true;
+            saveBtn.textContent = '⏳ Saving...';
 
-    localStorage.setItem('attendanceReport', JSON.stringify(reportData));
-    window.location.href = '/view-reports';
-            
-            showToast('✅ Attendance saved successfully!');
+            const payload = Object.entries(attendance).map(
+                ([id, status]) => ({
+                    student_id: parseInt(id),
+                    status: status
+                })
+            );
+
+            try {
+                const res = await fetch('/save-attendance', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const result = await res.json();
+
+                if (result.success) {
+                    showToast('✅ Saved to database!');
+                    setTimeout(() => {
+                        window.location.href = '/view-reports';
+                    }, 1500);
+                } else {
+                    showToast('❌ Error saving!');
+                    saveBtn.disabled = false;
+                    saveBtn.textContent = '💾 Save Attendance';
+                }
+            } catch (err) {
+                showToast('❌ Network error!');
+                saveBtn.disabled = false;
+                saveBtn.textContent = '💾 Save Attendance';
+            }
         }
 
-        // Toast notification
+        // Toast
         function showToast(message) {
             const toast = document.getElementById('toast');
             toast.textContent = message;
@@ -485,7 +510,7 @@
         }
 
         // Init
-        renderTable();
+        loadStudents();
     </script>
 </body>
 </html>
