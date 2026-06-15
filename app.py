@@ -180,7 +180,7 @@ def api_search():
     conn.close()
 
     return jsonify([dict(r) for r in records])
-    
+
 
 @app.route('/api/students')
 def api_students():
@@ -190,6 +190,23 @@ def api_students():
     students = conn.execute('SELECT * FROM students').fetchall()
     conn.close()
     return jsonify([dict(s) for s in students])
+
+
+@app.route('/api/report')
+def api_report():
+    if 'staff_name' not in session:
+        return jsonify([]), 401
+    date = request.args.get('date', '')
+    conn = get_db()
+    records = conn.execute('''
+        SELECT s.reg_no, s.name, s.dept, a.status, a.date
+        FROM attendance a
+        JOIN students s ON a.student_id = s.id
+        WHERE a.date = ?
+        ORDER BY s.reg_no
+    ''', (date,)).fetchall()
+    conn.close()
+    return jsonify([dict(r) for r in records])    
 
 
 @app.route('/logout')

@@ -90,11 +90,11 @@
             margin-top: 4px;
         }
 
-        .total h2  { color: #667eea; }
+        .total h2   { color: #667eea; }
         .present h2 { color: #2ecc71; }
         .absent h2  { color: #e74c3c; }
 
-        /* Table Container */
+        /* Table */
         .table-container {
             background: white;
             border-radius: 12px;
@@ -117,6 +117,12 @@
             font-size: 15px;
         }
 
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
         .excel-btn {
             background: linear-gradient(135deg, #1d6f42, #2ecc71);
             color: white;
@@ -127,16 +133,13 @@
             font-weight: 600;
             cursor: pointer;
             transition: transform 0.2s;
-            display: flex;
-            align-items: center;
-            gap: 6px;
+            white-space: nowrap;
         }
 
         .excel-btn:hover {
             transform: translateY(-2px);
         }
 
-        /* Table */
         .table-wrapper {
             width: 100%;
             overflow-x: auto;
@@ -174,10 +177,10 @@
             padding: 12px 15px;
             font-size: 13px;
             color: #333;
-            max-width: 150px;
+            white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            white-space: nowrap;
+            max-width: 150px;
         }
 
         .reg-no {
@@ -200,49 +203,40 @@
             border-radius: 20px;
             font-size: 11px;
             font-weight: 600;
-            white-space: nowrap;
         }
 
-        .status-present {
-            background: #d4edda;
-            color: #2ecc71;
-        }
+        .status-present { background: #d4edda; color: #2ecc71; }
+        .status-absent  { background: #fde8e8; color: #e74c3c; }
 
-        .status-absent {
-            background: #fde8e8;
-            color: #e74c3c;
-        }
-
-        /* No data */
-        .no-data {
+        /* State */
+        .state-box {
             text-align: center;
-            padding: 40px;
+            padding: 40px 20px;
             color: #999;
-            font-size: 14px;
+        }
+
+        .state-box .icon { font-size: 40px; margin-bottom: 10px; }
+        .state-box p { font-size: 14px; }
+
+        .spinner {
+            width: 30px;
+            height: 30px;
+            border: 3px solid #f0f0f0;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 10px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
 
         /* Mobile */
         @media (max-width: 500px) {
-            .summary {
-                grid-template-columns: repeat(3, 1fr);
-                gap: 8px;
-            }
-
-            .summary-card {
-                padding: 12px 8px;
-            }
-
-            .summary-card h2 {
-                font-size: 22px;
-            }
-
-            .summary-card p {
-                font-size: 10px;
-            }
-
-            .header-left h1 {
-                font-size: 16px;
-            }
+            .summary-card h2 { font-size: 22px; }
+            .summary-card p  { font-size: 10px; }
+            .header-left h1  { font-size: 16px; }
         }
     </style>
 </head>
@@ -277,13 +271,15 @@
         <!-- Table -->
         <div class="table-container">
             <div class="table-header">
-                <h3>📋 Report Details</h3>
-                <button class="excel-btn" onclick="exportToExcel()">
-                    📥 Download Excel
-                </button>
+                <h3>📋 Today's Report</h3>
+                <div class="btn-group">
+                    <button class="excel-btn" onclick="exportToExcel()">
+                        📥 Download Excel
+                    </button>
+                </div>
             </div>
             <div class="table-wrapper">
-                <table id="reportTable">
+                <table>
                     <thead>
                         <tr>
                             <th>#</th>
@@ -295,6 +291,14 @@
                         </tr>
                     </thead>
                     <tbody id="reportBody">
+                        <tr>
+                            <td colspan="6">
+                                <div class="state-box">
+                                    <div class="spinner"></div>
+                                    <p>Loading report...</p>
+                                </div>
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
@@ -303,49 +307,79 @@
     </div>
 
     <script>
-        // Get attendance data from localStorage
-        const savedData = localStorage.getItem('attendanceReport');
+        let reportData = [];
+
+        // Today's date
         const today = new Date();
-        const dateStr = today.toLocaleDateString('en-US', {
+        const options = {
             weekday: 'long', year: 'numeric',
             month: 'long', day: 'numeric'
-        });
-
+        };
+        const dateStr = today.toLocaleDateString('en-US', options);
         document.getElementById('reportDate').textContent = dateStr;
 
-        if (savedData) {
-            const data = JSON.parse(savedData);
-            renderReport(data);
-        } else {
-            document.getElementById('reportBody').innerHTML =
-                '<tr><td colspan="6" class="no-data">⚠️ No attendance data found. Please mark attendance first.</td></tr>';
+        // Load report from API
+        async function loadReport() {
+            try {
+                const todayISO = today.toISOString().split('T')[0];
+                const res = await fetch(`/api/report?date=${todayISO}`);
+                const data = await res.json();
+                reportData = data;
+                renderReport(data);
+            } catch (err) {
+                document.getElementById('reportBody').innerHTML = `
+                    <tr>
+                        <td colspan="6">
+                            <div class="state-box">
+                                <div class="icon">❌</div>
+                                <p>Error loading report!</p>
+                            </div>
+                        </td>
+                    </tr>`;
+            }
         }
 
+        // Render report
         function renderReport(data) {
             const tbody = document.getElementById('reportBody');
-            tbody.innerHTML = '';
+
+            if (data.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="6">
+                            <div class="state-box">
+                                <div class="icon">📭</div>
+                                <p>No attendance marked for today yet.</p>
+                            </div>
+                        </td>
+                    </tr>`;
+                return;
+            }
 
             let presentCount = 0;
             let absentCount = 0;
+            tbody.innerHTML = '';
 
-            data.forEach((s, index) => {
-                if (s.status === 'present') presentCount++;
+            data.forEach((r, index) => {
+                if (r.status === 'present') presentCount++;
                 else absentCount++;
 
                 const row = document.createElement('tr');
-                row.className = s.status === 'present' ? 'present-row' : 'absent-row';
+                row.className = r.status === 'present' ?
+                    'present-row' : 'absent-row';
 
                 row.innerHTML = `
                     <td>${index + 1}</td>
-                    <td><span class="reg-no">${s.regNo}</span></td>
-                    <td title="${s.name}">${s.name}</td>
-                    <td><span class="dept-badge">${s.dept}</span></td>
+                    <td><span class="reg-no">${r.reg_no}</span></td>
+                    <td title="${r.name}">${r.name}</td>
+                    <td><span class="dept-badge">${r.dept}</span></td>
                     <td>
-                        <span class="status-badge status-${s.status}">
-                            ${s.status === 'present' ? '✅ Present' : '❌ Absent'}
+                        <span class="status-badge status-${r.status}">
+                            ${r.status === 'present' ?
+                                '✅ Present' : '❌ Absent'}
                         </span>
                     </td>
-                    <td>${dateStr.split(',')[1]?.trim() || dateStr}</td>
+                    <td>${r.date}</td>
                 `;
                 tbody.appendChild(row);
             });
@@ -355,41 +389,42 @@
             document.getElementById('absentCount').textContent = absentCount;
         }
 
+        // Export to Excel
         function exportToExcel() {
-            const savedData = localStorage.getItem('attendanceReport');
-            if (!savedData) {
-                alert('No attendance data to export!');
+            if (reportData.length === 0) {
+                alert('No data to export!');
                 return;
             }
 
-            const data = JSON.parse(savedData);
-
-            const excelData = data.map((s, index) => ({
-                'S.No': index + 1,
-                'Register No': s.regNo,
-                'Student Name': s.name,
-                'Department': s.dept,
-                'Status': s.status === 'present' ? 'Present' : 'Absent',
-                'Date': dateStr
+            const excelData = reportData.map((r, index) => ({
+                'S.No':         index + 1,
+                'Register No':  r.reg_no,
+                'Student Name': r.name,
+                'Department':   r.dept,
+                'Status':       r.status === 'present' ? 'Present' : 'Absent',
+                'Date':         r.date
             }));
 
             const ws = XLSX.utils.json_to_sheet(excelData);
 
-            // Column widths
             ws['!cols'] = [
-                { wch: 6 },
+                { wch: 6  },
                 { wch: 12 },
                 { wch: 20 },
                 { wch: 10 },
                 { wch: 10 },
-                { wch: 30 }
+                { wch: 15 }
             ];
 
             const wb = XLSX.utils.book_new();
             XLSX.utils.book_append_sheet(wb, ws, 'Attendance');
 
-            XLSX.writeFile(wb, `Attendance_Report_${today.toISOString().split('T')[0]}.xlsx`);
+            const fileName = `Attendance_${today.toISOString().split('T')[0]}.xlsx`;
+            XLSX.writeFile(wb, fileName);
         }
+
+        // Init
+        loadReport();
     </script>
 </body>
 </html>
