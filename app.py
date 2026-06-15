@@ -69,28 +69,39 @@ def login():
         password = request.form.get('password')
 
         # Staff login
-        if user_id == 'admin' and password == 'admin123':
-            session['staff_name'] = 'Admin'
-            session['role'] = 'staff'
-            return redirect(url_for('dashboard'))
+        
+staff_accounts = {
+    'admin':   {'password': 'admin123',  'name': 'Admin'},
+    'staff01': {'password': 'staff123',  'name': 'Kumar Sir'},
+    'staff02': {'password': 'staff456',  'name': 'Priya Mam'},
+    'staff03': {'password': 'staff789',  'name': 'Rajan Sir'},
+}
+
+if user_id in staff_accounts and \
+   staff_accounts[user_id]['password'] == password:
+    session['staff_name'] = staff_accounts[user_id]['name']
+    session['role'] = 'staff'
+    return redirect(url_for('dashboard'))
 
         # Student login
-        conn = get_db()
-        student = conn.execute(
-            'SELECT * FROM students WHERE reg_no = ? AND password = ?',
-            (user_id, password)
-        ).fetchone()
-        conn.close()
+    conn = get_db()
+    student = conn.execute(
+        'SELECT * FROM students WHERE reg_no = ? AND password = ?',
+        (user_id, password)
+    ).fetchone()
+    conn.close()
 
-        if student:
-            session['student_id']   = student['id']
-            session['student_name'] = student['name']
-            session['student_reg']  = student['reg_no']
-            session['role']         = 'student'
-            return redirect(url_for('student_portal'))
+    if student:
+        session['student_id']   = student['id']
+        session['student_name'] = student['name']
+        session['student_reg']  = student['reg_no']
+        session['role']         = 'student'
+        return redirect(url_for('student_portal'))
 
-        flash('Invalid credentials. Try again.', 'error')
-        return redirect(url_for('login'))
+    flash('Invalid credentials. Try again.', 'error')
+    return redirect(url_for('login'))
+
+        
 
     return render_template('login.html')
 
